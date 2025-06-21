@@ -1,6 +1,11 @@
 from rest_framework import serializers
 from .models import CustomUser, ProfilTechnicien, ProfilClient, ProfilCommercant
 
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'email', 'role', 'telephone', 'province', 'is_active']
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser

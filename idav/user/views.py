@@ -3,8 +3,11 @@ from .models import CustomUser, ProfilTechnicien, ProfilClient, ProfilCommercant
 from .serializers import (
     UserSerializer, ProfilTechnicienSerializer, ProfilClientSerializer, ProfilCommercantSerializer
 )
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import UserListSerializer
 # Seul l'admin peut créer un utilisateur
 class UserCreateView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -14,7 +17,7 @@ class UserCreateView(generics.CreateAPIView):
 # Connexion (JWT)
 class LoginView(TokenObtainPairView):
     # Utilise le serializer par défaut ou un custom si besoin
-    pass
+    permission_classes = [AllowAny]
 
 # Récupérer/modifier son propre profil
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -24,6 +27,12 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         return self.request.user
 
+class UserListView(generics.ListAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserListSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+  # Seuls les admins peuvent voir la liste
 # Profils spécifiques
 class ProfilTechnicienView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfilTechnicienSerializer
